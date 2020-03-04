@@ -1,0 +1,25 @@
+
+// Create a new device
+var device = {
+  deviceId: 'sample-device-' + Date.now()
+};
+
+registry.create(device, printAndContinue('create', function next() {
+
+  // Get the newly-created device
+  console.log('\n**getting device \'' + device.deviceId + '\'');
+  registry.get(device.deviceId, printAndContinue('get', function next() {
+
+    // Delete the new device
+    console.log('\n**deleting device \'' + device.deviceId + '\'');
+    registry.delete(device.deviceId, printAndContinue('delete'));
+  }));
+}));
+
+function printAndContinue(op, next) {
+  return function printResult(err, deviceInfo, res) {
+    if (err) console.log(op + ' error: ' + err.toString());
+    if (res) console.log(op + ' status: ' + res.statusCode + ' ' + res.statusMessage);
+    if (deviceInfo) console.log(op + ' device info: ' + JSON.stringify(deviceInfo));
+    if (next) next();
+  };
